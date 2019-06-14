@@ -15,6 +15,8 @@ data class Post(
     val id: String,
 
     @Json(name = "title")
-    val title: String?
+    val title: String?,
+
+    val isPending: Boolean
 
 ) : Serializable

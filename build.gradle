@@ -43,4 +43,8 @@ ext {
     dagger2Version = '2.15'
     archVersion ='1.1.1'
     moshiKotlinVersion = '1.8.0'
+    moshiConverterVersion = '2.6.0'
+    rxJava2Version = '2.1.1'
+    retrofitVersion = '2.6.0'
+    rxJavaAdapterVersion = '2.6.0'
 }
