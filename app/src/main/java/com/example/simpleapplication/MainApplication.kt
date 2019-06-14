@@ -2,7 +2,8 @@ package com.example.simpleapplication
 
 import android.app.Activity
 import android.app.Application
-import dagger.android.AndroidInjection
+import com.example.simpleapplication.di.component.DaggerAppComponent
+import com.example.simpleapplication.di.module.AppModule
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
