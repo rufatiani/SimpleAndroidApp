@@ -1,5 +1,6 @@
 package com.example.simpleapplication.model.repository
 
+import android.os.AsyncTask
 import android.util.Log
 import com.example.simpleapplication.utils.Utils
 import com.example.simpleapplication.model.Post
@@ -41,5 +42,34 @@ class PostRepository @Inject constructor(val apiInterface: ApiInterface,
                 //Print log it.size :)
                 Log.e("REPOSITORY DB *** ", it.toString())
             }
+    }
+
+    fun savePost(post: Post){
+        InsertPostAsyncTask(postDao).execute(post)
+        val hasConnection = utils.isConnectedToInternet()
+        if(hasConnection){
+            UpdatePostAsyncTask(postDao).execute(post.id)
+        }
+    }
+
+    fun sendPost(post: String ): Observable<Post> {
+        return apiInterface.sendPost(post)
+            .doOnNext {
+                UpdatePostAsyncTask(postDao).execute(it.id)
+            }
+    }
+
+    private class InsertPostAsyncTask(postDao: PostDao) : AsyncTask<Post, Unit, Unit>() {
+        val postDao  = postDao
+        override fun doInBackground(vararg p0: Post?) {
+            postDao.insertPost(p0[0]!!)
+        }
+    }
+
+    private class UpdatePostAsyncTask(postDao: PostDao) : AsyncTask<Int, Unit, Unit>() {
+        val postDao  = postDao
+        override fun doInBackground(vararg p0: Int?) {
+            postDao.updatePost(p0[0]!!)
+        }
     }
 }

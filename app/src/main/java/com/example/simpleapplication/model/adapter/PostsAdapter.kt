@@ -46,11 +46,13 @@ class PostsAdapter(
         fun postListItem(postItem: Post) {
             postTittle.text = postItem.title
             if(postItem.isPending != null) {
-                if (!postItem.isPending) {
+                if (postItem.isPending) {
                     postStatus.visibility = View.VISIBLE
                 } else {
-                    postStatus.visibility = View.GONE
+                    postStatus.visibility = View.INVISIBLE
                 }
+            }else{
+                postStatus.visibility = View.INVISIBLE
             }
         }
     }

@@ -3,6 +3,7 @@ package com.example.simpleapplication.ui
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import com.example.simpleapplication.model.repository.PostRepository
 import com.example.simpleapplication.model.Post
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -47,6 +48,10 @@ class PostViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .debounce(400, MILLISECONDS)
             .subscribe(disposableObserver)
+    }
+
+    fun savePost(post: Post) {
+        postRepository.savePost(post)
     }
 
     fun disposeElements(){

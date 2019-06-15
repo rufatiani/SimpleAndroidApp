@@ -12,9 +12,9 @@ import java.io.Serializable
 data class Post(
 
     @Json(name = "id")
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val id: String,
+    val id: Int,
 
     @Json(name = "title")
     @ColumnInfo(name = "title")

@@ -1,9 +1,7 @@
 package com.example.simpleapplication.model.dao
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.lifecycle.LiveData
+import android.arch.persistence.room.*
 import com.example.simpleapplication.model.Post
 import io.reactivex.Single
 
@@ -16,9 +14,6 @@ interface PostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPost(post: Post)
 
-
-    @Insert(
-        onConflict = OnConflictStrategy.REPLACE
-    )
-    fun insertAllPosts(posts: List<Post>)
+    @Query("UPDATE posts SET `is-pending`=0 WHERE id = :id")
+    fun updatePost(id: Int)
 }
