@@ -1,9 +1,12 @@
 package com.example.simpleapplication.di.module
 
 import android.app.Application
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.persistence.room.Room
-import com.example.simpleapplication.dao.Database
-import com.example.simpleapplication.dao.PostDao
+import com.example.simpleapplication.utils.Utils
+import com.example.simpleapplication.ui.PostViewModelFactory
+import com.example.simpleapplication.model.dao.Database
+import com.example.simpleapplication.model.dao.PostDao
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -23,4 +26,14 @@ class AppModule(val app: Application){
     @Provides
     @Singleton
     fun providePostDao(database: Database): PostDao = database.postDao()
+
+    @Provides
+    fun providePostViewModelFactory(
+        factory: PostViewModelFactory
+    ): ViewModelProvider.Factory = factory
+
+    @Provides
+    @Singleton
+    fun provideUtils(): Utils = Utils(app)
+
 }

@@ -1,4 +1,4 @@
-package com.example.simpleapplication.api
+package com.example.simpleapplication.model.api
 
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient

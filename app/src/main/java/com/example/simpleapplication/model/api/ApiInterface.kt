@@ -1,4 +1,4 @@
-package com.example.simpleapplication.api
+package com.example.simpleapplication.model.api
 
 import io.reactivex.Observable
 import com.example.simpleapplication.model.Post
@@ -12,5 +12,5 @@ interface ApiInterface {
 
     @POST("posts/")
     @FormUrlEncoded
-    fun sendPost(@Field("tittle") tittle: String): Observable<Post>
+    fun sendPost(@Field("title") title: String): Observable<Post>
 }

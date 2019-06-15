@@ -17,7 +17,11 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            buildConfigField 'String', 'URL', '"https://my-json-server.typicode.com/typicode/demo/"'
+        }
         release {
+            buildConfigField 'String', 'URL', '"https://my-json-server.typicode.com/typicode/demo/"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -43,6 +47,7 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:${rootProject.ext.archVersion}"
     implementation "android.arch.lifecycle:extensions:${rootProject.ext.archVersion}"
     kapt "android.arch.lifecycle:compiler:${rootProject.ext.archVersion}"
+    implementation "android.arch.persistence.room:rxjava2:${rootProject.ext.archVersion}"
     implementation "com.squareup.moshi:moshi-kotlin:${rootProject.ext.moshiKotlinVersion}"
 
     implementation "com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}"
