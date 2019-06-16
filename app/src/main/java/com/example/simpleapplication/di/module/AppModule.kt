@@ -1,12 +1,16 @@
 package com.example.simpleapplication.di.module
 
 import android.app.Application
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.persistence.room.Room
+import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
+import androidx.work.WorkerFactory
 import com.example.simpleapplication.utils.Utils
 import com.example.simpleapplication.ui.PostViewModelFactory
 import com.example.simpleapplication.model.dao.Database
 import com.example.simpleapplication.model.dao.PostDao
+import com.example.simpleapplication.model.service.ChildWorkerFactory
+import com.example.simpleapplication.model.service.SendWorker
+import com.example.simpleapplication.model.service.SendWorkerFactory
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

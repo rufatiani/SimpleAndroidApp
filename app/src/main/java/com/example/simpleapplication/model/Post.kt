@@ -1,8 +1,8 @@
 package com.example.simpleapplication.model
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import java.io.Serializable
 
@@ -18,7 +18,7 @@ data class Post(
 
     @Json(name = "title")
     @ColumnInfo(name = "title")
-    val title: String?,
+    val title: String,
 
     @ColumnInfo(name = "is-pending")
     val isPending: Boolean?

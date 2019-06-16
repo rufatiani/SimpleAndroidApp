@@ -39,37 +39,47 @@ class PostRepository @Inject constructor(val apiInterface: ApiInterface,
         return postDao.queryPosts()
             .toObservable()
             .doOnNext {
-                //Print log it.size :)
                 Log.e("REPOSITORY DB *** ", it.toString())
             }
     }
 
     fun savePost(post: Post){
         InsertPostAsyncTask(postDao).execute(post)
-        val hasConnection = utils.isConnectedToInternet()
-        if(hasConnection){
-            UpdatePostAsyncTask(postDao).execute(post.id)
+    }
+
+    fun updatePendingPosts(id: Int){
+        UpdatePostAsyncTask(postDao).execute(id)
+    }
+
+    fun sendPost(post: Post ): Observable<Post> {
+        Log.e("sendPost", "masuk proses kirim ke API")
+        return post.title.let {
+            apiInterface.sendPost(it)
+                .doOnNext {
+                    updatePendingPosts(post.id)
+                }
         }
     }
 
-    fun sendPost(post: String ): Observable<Post> {
-        return apiInterface.sendPost(post)
+    fun getPendingPost(): Observable<List<Post>>{
+        return postDao.queryPendingPost()
+            .toObservable()
             .doOnNext {
-                UpdatePostAsyncTask(postDao).execute(it.id)
+                    Log.e("SERVICE - PENDING", it.toString())
             }
     }
 
-    private class InsertPostAsyncTask(postDao: PostDao) : AsyncTask<Post, Unit, Unit>() {
+    private class InsertPostAsyncTask(postDao: PostDao) : AsyncTask<Post, Unit, Long>() {
         val postDao  = postDao
-        override fun doInBackground(vararg p0: Post?) {
-            postDao.insertPost(p0[0]!!)
+        override fun doInBackground(vararg p0: Post?) : Long? {
+           return postDao.insertPost(p0[0]!!)
         }
     }
 
     private class UpdatePostAsyncTask(postDao: PostDao) : AsyncTask<Int, Unit, Unit>() {
         val postDao  = postDao
-        override fun doInBackground(vararg p0: Int?) {
-            postDao.updatePost(p0[0]!!)
+        override fun doInBackground(vararg id: Int?) {
+            id[0]?.let { postDao.updatePost(it) }
         }
     }
 }

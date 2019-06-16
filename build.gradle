@@ -47,4 +47,6 @@ ext {
     rxJava2Version = '2.1.1'
     retrofitVersion = '2.6.0'
     rxJavaAdapterVersion = '2.6.0'
+    workVersion = '2.0.1'
+    roomVersion = '1.1.1'
 }

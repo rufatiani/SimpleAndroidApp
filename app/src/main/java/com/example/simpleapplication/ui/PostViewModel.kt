@@ -1,24 +1,28 @@
 package com.example.simpleapplication.ui
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.simpleapplication.model.repository.PostRepository
 import com.example.simpleapplication.model.Post
+import com.example.simpleapplication.model.service.SendWorker
+import com.example.simpleapplication.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class PostViewModel @Inject constructor(
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val utils: Utils
 ) : ViewModel() {
 
     var postsResult: MutableLiveData<List<Post>> = MutableLiveData()
     var postsError: MutableLiveData<String> = MutableLiveData()
-    lateinit var disposableObserver: DisposableObserver<List<Post>>
+    val compositeDisposable = CompositeDisposable()
 
     fun postsResult(): LiveData<List<Post>> {
         return postsResult
@@ -29,7 +33,7 @@ class PostViewModel @Inject constructor(
     }
 
     fun loadPosts() {
-        disposableObserver = object : DisposableObserver<List<Post>>() {
+        val disposableObserver = object : DisposableObserver<List<Post>>() {
             override fun onComplete() {
 
             }
@@ -50,12 +54,43 @@ class PostViewModel @Inject constructor(
             .subscribe(disposableObserver)
     }
 
+    private fun sendPost(post: Post) {
+       val disposableObserver = object : DisposableObserver<Post>() {
+                override fun onComplete() {
+                }
+
+                override fun onNext(post: Post) {
+                    val id = post
+                    Log.e("ITEMS SUCCESS ", id.toString())
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e("ERROR *** ", e.message)
+                }
+
+            }
+
+        postRepository.sendPost(post)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .debounce(400, MILLISECONDS)
+            .subscribe(disposableObserver)
+
+        compositeDisposable.addAll(disposableObserver)
+
+    }
+
     fun savePost(post: Post) {
         postRepository.savePost(post)
+
+        val hasConnection = utils.isConnectedToInternet();
+        if(hasConnection){
+            post.title?.let { sendPost(post) }
+        }
     }
 
     fun disposeElements(){
-        if(null != disposableObserver && !disposableObserver.isDisposed) disposableObserver.dispose()
+        if(null != compositeDisposable && !compositeDisposable.isDisposed) compositeDisposable.dispose()
     }
 
 }
