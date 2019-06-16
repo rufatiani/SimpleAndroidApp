@@ -1,0 +1,35 @@
+## Table of Contents
+* [General Info](#general-info)
+* [Technologies](#technologies)
+* [Tools](#tools)
+* [Setup](#setup)
+* [Reference](#reference)
+
+## General Info
+Simple project for learn some of new technologies in programming android native.
+
+## Technologies
+* OfflineFirst
+* MVVM
+* Kotlin
+* Live Data
+* Room
+* Work Manager
+* Dagger
+* Coroutine
+
+## Tools
+* Java 8
+* Android Studio 3.4.1
+* Android Pie 9.0.0 (device)
+
+## Setup
+To run this project, you need to clone or download this project. Then, open it in your IDE.
+
+## Reference
+* https://medium.com/@cdmunoz/offline-first-android-app-with-mvvm-dagger2-rxjava-livedata-and-room-25de4e1ada14
+* https://proandroiddev.com/offline-first-android-app-with-mvvm-dagger2-rxjava-livedata-and-room-part-2-72716e3520
+* https://medium.com/@cdmunoz/offline-first-android-app-with-mvvm-dagger2-rxjava-livedata-and-room-part-3-af6eeafeb29b
+* https://medium.com/@cdmunoz/offline-first-android-app-with-mvvm-dagger2-rxjava-livedata-and-room-part-3-af6eeafeb29b
+* https://medium.com/@cdmunoz/offline-first-android-app-with-mvvm-dagger2-rxjava-livedata-and-room-part-5-8fc4f9cee34d
+
