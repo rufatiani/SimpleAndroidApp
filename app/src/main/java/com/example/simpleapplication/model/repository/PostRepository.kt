@@ -8,24 +8,43 @@ import com.example.simpleapplication.model.api.ApiInterface
 import com.example.simpleapplication.model.dao.PostDao
 import io.reactivex.Observable
 import javax.inject.Inject
+import kotlinx.coroutines.*
 
 class PostRepository @Inject constructor(val apiInterface: ApiInterface,
                                          val postDao: PostDao, val utils: Utils
 ) {
 
-    fun getPosts(): Observable<List<Post>> {
+    fun getPosts(): Observable<List<Post>>?  {
         val hasConnection = utils.isConnectedToInternet()
         var observableFromApi: Observable<List<Post>>? = null
+        var observableFromDb: Observable<List<Post>>? = null
+        var deferredFromApi: Deferred<Observable<List<Post>>>? = null
+
         if (hasConnection){
-            observableFromApi = getPostFromApi()
+            deferredFromApi = GlobalScope.async {
+                Log.e("API", "Call Get API")
+                getPostFromApi()
+            }
         }
-        val observableFromDb = getPostFromDb()
+        val deferredFromDb = GlobalScope.async {
+            Log.e("DB", "Call Get DB")
+            getPostFromDb()
+        }
+
+        runBlocking {
+            if (hasConnection){
+                observableFromApi = deferredFromApi?.await()
+            }
+
+            observableFromDb = deferredFromDb.await()
+        }
 
         return if (hasConnection) Observable.concatArrayEager(observableFromApi, observableFromDb)
         else observableFromDb
     }
 
-    fun getPostFromApi(): Observable<List<Post>> {
+    suspend fun getPostFromApi(): Observable<List<Post>> {
+        Log.e("GetFromAPI", "Entering GetFromApi")
         return apiInterface.getPosts()
             .doOnNext {
                 Log.e("REPOSITORY API * ", it.toString())
@@ -35,11 +54,12 @@ class PostRepository @Inject constructor(val apiInterface: ApiInterface,
             }
     }
 
-    fun getPostFromDb(): Observable<List<Post>> {
+    suspend fun getPostFromDb(): Observable<List<Post>> {
+        Log.e("GetFromDb", "Entering GetFromDB")
         return postDao.queryPosts()
             .toObservable()
             .doOnNext {
-                Log.e("REPOSITORY DB *** ", it.toString())
+                Log.e("REPOSITORY DB * ", it.toString())
             }
     }
 
@@ -47,8 +67,8 @@ class PostRepository @Inject constructor(val apiInterface: ApiInterface,
         InsertPostAsyncTask(postDao).execute(post)
     }
 
-    fun updatePendingPosts(id: Int){
-        UpdatePostAsyncTask(postDao).execute(id)
+    fun updatePendingPosts(){
+        UpdatePostAsyncTask(postDao).execute()
     }
 
     fun sendPost(post: Post ): Observable<Post> {
@@ -56,7 +76,7 @@ class PostRepository @Inject constructor(val apiInterface: ApiInterface,
         return post.title.let {
             apiInterface.sendPost(it)
                 .doOnNext {
-                    updatePendingPosts(post.id)
+                    updatePendingPosts()
                 }
         }
     }
@@ -76,10 +96,10 @@ class PostRepository @Inject constructor(val apiInterface: ApiInterface,
         }
     }
 
-    private class UpdatePostAsyncTask(postDao: PostDao) : AsyncTask<Int, Unit, Unit>() {
+    private class UpdatePostAsyncTask(postDao: PostDao) : AsyncTask<Void, Unit, Unit>() {
         val postDao  = postDao
-        override fun doInBackground(vararg id: Int?) {
-            id[0]?.let { postDao.updatePost(it) }
+        override fun doInBackground(vararg params: Void?) {
+             postDao.updatePost()
         }
     }
 }

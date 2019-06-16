@@ -38,6 +38,11 @@ class PostsAdapter(
         notifyItemRangeInserted(initPosition, postList.size)
     }
 
+    fun clear(){
+        postList =  ArrayList<Post>()
+        notifyDataSetChanged()
+    }
+
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         var postTittle = itemView.findViewById<TextView>(R.id.tvItemTittle)

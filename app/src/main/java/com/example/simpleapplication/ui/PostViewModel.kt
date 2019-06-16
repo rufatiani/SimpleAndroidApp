@@ -1,6 +1,7 @@
 package com.example.simpleapplication.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,11 +48,8 @@ class PostViewModel @Inject constructor(
             }
         }
 
-        postRepository.getPosts()
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .debounce(400, MILLISECONDS)
-            .subscribe(disposableObserver)
+        postRepository.getPosts()?.subscribeOn(Schedulers.newThread())?.observeOn(AndroidSchedulers.mainThread())
+            ?.debounce(400, MILLISECONDS)?.subscribe(disposableObserver)
     }
 
     private fun sendPost(post: Post) {
@@ -84,9 +82,13 @@ class PostViewModel @Inject constructor(
         postRepository.savePost(post)
 
         val hasConnection = utils.isConnectedToInternet();
-        if(hasConnection){
+        if(hasConnection) {
             post.title?.let { sendPost(post) }
         }
+    }
+
+    fun postsReset(): LiveData<List<Post>> {
+        return MutableLiveData()
     }
 
     fun disposeElements(){
