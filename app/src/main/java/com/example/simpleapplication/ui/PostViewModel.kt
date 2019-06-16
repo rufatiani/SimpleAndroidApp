@@ -58,8 +58,6 @@ class PostViewModel @Inject constructor(
                 }
 
                 override fun onNext(post: Post) {
-                    val id = post
-                    Log.e("ITEMS SUCCESS ", id.toString())
                 }
 
                 override fun onError(e: Throwable) {

@@ -25,9 +25,7 @@ class SendWorker @Inject constructor(
 ) : Worker(appContext, params){
 
     override fun doWork(): Result {
-        Log.e("SERVICE", "masuk service")
         if (utils.isConnectedToInternet()) {
-            Log.e("SERVICE", "connect")
             syncPosts()
         }
 
@@ -64,8 +62,6 @@ class SendWorker @Inject constructor(
             }
 
             override fun onNext(post: Post) {
-                val id = post
-                Log.e("ITEMS SUCCESS ", id.toString())
             }
 
             override fun onError(e: Throwable) {
